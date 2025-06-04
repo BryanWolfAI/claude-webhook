@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # This is the CORS import I mentioned
 import requests
 from datetime import datetime
 
 app = Flask(__name__)
+CORS(app)  # This line enables CORS for all routes
 
 ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/23187372/2vf1g9a/"
 
@@ -15,14 +17,14 @@ def handle():
     note = data.get("note", "")
     category = data.get("category", "")
     timestamp = data.get("timestamp", datetime.utcnow().isoformat())
-
+    
     payload = {
         "name": name,
         "note": note,
         "category": category,
         "timestamp": timestamp
     }
-
+    
     try:
         response = requests.post(ZAPIER_WEBHOOK_URL, json=payload)
         response.raise_for_status()
